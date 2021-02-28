@@ -3,6 +3,7 @@ binary ?= application
 build := performance
 openmp := true
 local := true
+universal := false
 flags += -I. -I..
 
 # in order for this to work, obj/lzma.o must be omitted or bsnes will hang on startup.
@@ -29,6 +30,12 @@ ifeq ($(platform),windows)
     options += -shared
   endif
 else ifeq ($(platform),macos)
+  # universal builds for macOS
+  ifeq ($(universal),true)
+    flags += -arch x86_64 -arch arm64
+    options += -arch x86_64 -arch arm64
+  endif
+
   ifeq ($(binary),application)
   else ifeq ($(binary),library)
     flags += -fPIC
